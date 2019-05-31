@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_external_sorting" default="compile.module.external_sorting">
+  <dirname property="module.external_sorting.basedir" file="${ant.file.module_external_sorting}"/>
+  
+  <property name="module.jdk.home.external_sorting" value="${jdk.home.10}"/>
+  <property name="module.jdk.bin.external_sorting" value="${jdk.bin.10}"/>
+  <property name="module.jdk.classpath.external_sorting" value="jdk.classpath.10"/>
+  
+  <property name="compiler.args.external_sorting" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="external_sorting.output.dir" value="${module.external_sorting.basedir}/target/classes"/>
+  <property name="external_sorting.testoutput.dir" value="${module.external_sorting.basedir}/target/test-classes"/>
+  
+  <path id="external_sorting.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="external_sorting.module.production.classpath">
+    <path refid="${module.jdk.classpath.external_sorting}"/>
+    <path refid="library.maven:_org.jcuda:jcuda:0.9.2.classpath"/>
+    <path refid="library.maven:_org.jcuda:jcuda-natives:windows-x86_64:0.9.2.classpath"/>
+  </path>
+  
+  <path id="external_sorting.runtime.production.module.classpath">
+    <pathelement location="${external_sorting.output.dir}"/>
+    <path refid="library.maven:_org.jcuda:jcuda:0.9.2.classpath"/>
+    <path refid="library.maven:_org.jcuda:jcuda-natives:windows-x86_64:0.9.2.classpath"/>
+  </path>
+  
+  <path id="external_sorting.module.classpath">
+    <path refid="${module.jdk.classpath.external_sorting}"/>
+    <pathelement location="${external_sorting.output.dir}"/>
+    <path refid="library.maven:_org.jcuda:jcuda:0.9.2.classpath"/>
+    <path refid="library.maven:_org.jcuda:jcuda-natives:windows-x86_64:0.9.2.classpath"/>
+  </path>
+  
+  <path id="external_sorting.runtime.module.classpath">
+    <pathelement location="${external_sorting.testoutput.dir}"/>
+    <pathelement location="${external_sorting.output.dir}"/>
+    <path refid="library.maven:_org.jcuda:jcuda:0.9.2.classpath"/>
+    <path refid="library.maven:_org.jcuda:jcuda-natives:windows-x86_64:0.9.2.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.external_sorting">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.external_sorting">
+    <patternset refid="excluded.from.module.external_sorting"/>
+  </patternset>
+  
+  <path id="external_sorting.module.sourcepath">
+    <dirset dir="${module.external_sorting.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="external_sorting.module.test.sourcepath">
+    <dirset dir="${module.external_sorting.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.external_sorting" depends="compile.module.external_sorting.production,compile.module.external_sorting.tests" description="Compile module External Sorting"/>
+  
+  <target name="compile.module.external_sorting.production" depends="register.custom.compilers" description="Compile module External Sorting; production classes">
+    <mkdir dir="${external_sorting.output.dir}"/>
+    <javac2 destdir="${external_sorting.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.external_sorting}/javac">
+      <compilerarg line="${compiler.args.external_sorting}"/>
+      <bootclasspath refid="external_sorting.module.bootclasspath"/>
+      <classpath refid="external_sorting.module.production.classpath"/>
+      <src refid="external_sorting.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.external_sorting"/>
+    </javac2>
+    
+    <copy todir="${external_sorting.output.dir}">
+      <fileset dir="${module.external_sorting.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.external_sorting.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.external_sorting.tests" depends="register.custom.compilers,compile.module.external_sorting.production" description="compile module External Sorting; test classes" unless="skip.tests">
+    <mkdir dir="${external_sorting.testoutput.dir}"/>
+    <javac2 destdir="${external_sorting.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.external_sorting}/javac">
+      <compilerarg line="${compiler.args.external_sorting}"/>
+      <bootclasspath refid="external_sorting.module.bootclasspath"/>
+      <classpath refid="external_sorting.module.classpath"/>
+      <src refid="external_sorting.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.external_sorting"/>
+    </javac2>
+    
+    <copy todir="${external_sorting.testoutput.dir}">
+      <fileset dir="${module.external_sorting.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.external_sorting" description="cleanup module">
+    <delete dir="${external_sorting.output.dir}"/>
+    <delete dir="${external_sorting.testoutput.dir}"/>
+  </target>
+</project>
